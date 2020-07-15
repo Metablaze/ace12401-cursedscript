@@ -168,6 +168,8 @@ function InitAlteredFns() {
           popChatGlobal(Player.Name + " was forcibly summoned to another room by someone on her friends list. Yes, she was dumb enough to give any friend the ability to do that.");
           SendToRoom(data.ChatRoomName);
           popChatSilent("You have been sent to the room " + data.ChatRoomName + " by your captor, the messages above this one are from the previous room.", "System");
+          if (ChatRoomCharacter.length > 2)
+            popChatGlobal(Player.Name + " was forcibly summoned into this room by someone on her friends list. Yes, she was dumb enough to give any friend the ability to do that. Sorry if she's AFK.");
         }
       }
     };
