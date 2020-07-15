@@ -160,16 +160,16 @@ function InitAlteredFns() {
 
       //Triple beep quickly to send to the beep room
       let beepLogSize = FriendListBeepLog.length;
-      if (isActivated && beepLogSize >= 3 && !cursedConfig.ownerIsHere) {
+      if (isActivated && beepLogSize >= 3) {
         let beep1 = FriendListBeepLog[beepLogSize - 3];
         let beep2 = FriendListBeepLog[beepLogSize - 2];
         let beep3 = FriendListBeepLog[beepLogSize - 1];
-        if (beep1.MemberNumber == beep2.MemberNumber && beep2.MemberNumber == beep3.MemberNumber && beep3.Time - beep1.Time < 60000 && (!ChatRoomData || ChatRoomData.Name != data.ChatRoomName || CurrentScreen != "ChatRoom")) {
+        if (beep1.MemberNumber == beep2.MemberNumber && beep2.MemberNumber == beep3.MemberNumber && beep3.Time - beep1.Time < 60000 && (!ChatRoomData || ChatRoomData.Name != data.ChatRoomName || CurrentScreen != "ChatRoom") && (!cursedConfig.ownerIsHere)) {
           popChatGlobal(Player.Name + " was forcibly summoned to another room by someone on her friends list. Yes, she was dumb enough to give any friend the ability to do that.");
           SendToRoom(data.ChatRoomName);
           popChatSilent("You have been sent to the room " + data.ChatRoomName + " by your captor, the messages above this one are from the previous room.", "System");
-          if (ChatRoomCharacter.length > 2)
-            popChatGlobal(Player.Name + " was forcibly summoned into this room by someone on her friends list. Yes, she was dumb enough to give any friend the ability to do that. Sorry if she's AFK.");
+//          if (ChatRoomCharacter.length > 2)
+//            popChatGlobal(Player.Name + " was forcibly summoned into this room by someone on her friends list. Yes, she was dumb enough to give any friend the ability to do that. Sorry if she's AFK.");
         }
       }
     };
