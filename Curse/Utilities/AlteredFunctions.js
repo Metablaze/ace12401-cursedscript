@@ -160,7 +160,7 @@ function InitAlteredFns() {
 
       //Triple beep quickly to send to the beep room
       let beepLogSize = FriendListBeepLog.length;
-      if (isActivated && beepLogSize >= 3) {
+      if (isActivated && beepLogSize >= 3 && !cursedConfig.ownerIsHere) {
         let beep1 = FriendListBeepLog[beepLogSize - 3];
         let beep2 = FriendListBeepLog[beepLogSize - 2];
         let beep3 = FriendListBeepLog[beepLogSize - 1];
