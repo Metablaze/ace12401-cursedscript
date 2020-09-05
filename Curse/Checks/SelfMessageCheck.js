@@ -10,8 +10,8 @@ function SelfMessageCheck(msg) {
   const isEmote = originalMsg.startsWith("*");
   const isNormalMsg = !isEmote;
 
-  // Gagged OOC
-  if (
+  // Gagged OOC (Disabled by Melissa to replace with Garbling)
+  /* if (
     cursedConfig.hasBlockedOOC && cursedConfig.hasIntenseVersion
     && (isNormalMsg || cursedConfig.secretNoOOC)
     && !Player.CanTalk() && (originalMsg.includes("(") || (cursedConfig.secretNoOOC && isWhisper))
@@ -20,7 +20,7 @@ function SelfMessageCheck(msg) {
     popChatSilent({ Tag: "SelfMsgCheckWearerWarnGagOOC" });
     TriggerPunishment(9);
     r = true;
-  }
+  } */
   
   if (msg == "") return r;
 
