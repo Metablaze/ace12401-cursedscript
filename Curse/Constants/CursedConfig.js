@@ -21,7 +21,7 @@ function InitCursedConfig() {
     canReceiveNotes: false,
     hasCaptureMode: true,
     hasReminders: false,
-    hasForcedSensDep: true,
+    hasForcedSensDep: false,
     isLockedNewSub: false,
     isLockedNewLover: false,
     isLockedOwner: false,
