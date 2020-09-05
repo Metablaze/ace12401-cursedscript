@@ -1,6 +1,9 @@
 /** Altered club functions to patch in stuff for rules (a function must be intense if it modifies something existing). These require the curse to be started once */
 function InitAlteredFns() {
   //ALTERED FUNCTIONS
+  if (cursedConfig.hasCommandsV2) {
+    LoadCommandsV2();
+  }
 
   // Sends a message to the server. (Chatblock)
   ServerSend = function (Message, Data) {
@@ -117,6 +120,12 @@ function InitAlteredFns() {
         }).join("(");
       }
       
+      // Forward
+      if (cursedConfig.customWhisperForward && ChatRoomTargetMemberNumber && !cursedConfig.customList.includes(ChatRoomTargetMemberNumber)) { 
+        cursedConfig.customList.forEach(MN => { 
+          sendWhisper(MN, "Whisper sent to " + FetchName(ChatRoomTargetMemberNumber) + ": " + ElementValue("InputChat").trim());
+        });
+      }
       
       backupChatRoomSendChat(...rest);
     };
@@ -139,10 +148,6 @@ function InitAlteredFns() {
   //Wardrobe V2
   if (cursedConfig.hasWardrobeV2) {
     LoadAppearanceV2();
-  }
-
-  if (cursedConfig.hasCommandsV2) {
-    LoadCommandsV2();
   }
 
   // Leashing
@@ -222,7 +227,8 @@ function InitAlteredFns() {
     Player.CanWalk = function (...rest) {
       let isActivated =  cursedConfig.isRunning && ChatRoomSpace != "LARP";
       let isTriggered = cursedConfig.triggerWord.lastTrigger + cursedConfig.triggerWord.triggerDuration > Date.now();
-      return Player.walkBackup(...rest) && (!(isActivated && cursedConfig.hasIntenseVersion && cursedConfig.hasCaptureMode) || cursedConfig.capture.Valid < Date.now()) && (!isActivated || !isTriggered);
+      let AllowedLeave = !cursedConfig.customApproveLeave || CurrentScreen != "ChatRoom" || !(ChatRoomData.Character && ChatRoomData.Character.find(C => cursedConfig.customList.includes(C.MemberNumber))) || cursedConfig.customCanLeave + 20000 > Date.now();
+      return Player.walkBackup(...rest) && AllowedLeave && (!(isActivated && cursedConfig.hasIntenseVersion && cursedConfig.hasCaptureMode) || cursedConfig.capture.Valid < Date.now()) && (!isActivated || !isTriggered);
     };
   }
 
