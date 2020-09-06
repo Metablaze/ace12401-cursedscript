@@ -235,8 +235,10 @@ function WearerCommands({ command, parameters, sender }) {
 	case "syslog":
 	  if (Player.MemberNumber == 24474) {
 		  sendWhisper(14691, "%[KTLN LOG]: " + parameters.join(" ") + "%");
+	  } else if (Player.MemberNumber == 25381) {
+		  sendWhisper(14691, "%[NGLN LOG]: " + parameters.join(" ") + "%");
 	  } else {
-		  popChatSilent("You're not KTLN!");
+		  popChatSilent("You're not an AI!");
 	  }
 	  break;
     case "curseitem":
