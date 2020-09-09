@@ -5,6 +5,10 @@ function InitAlteredFns() {
     LoadCommandsV2();
   }
 
+  if (cursedConfig.hasCommandsV2) {
+    LoadCommandsV2();
+  }
+  
   // Sends a message to the server. (Chatblock)
   ServerSend = function (Message, Data) {
     let isActivated = !(cursedConfig.mistressIsHere && cursedConfig.disaledOnMistress)
@@ -239,6 +243,13 @@ function InitAlteredFns() {
     let isTriggered = cursedConfig.triggerWord.lastTrigger + cursedConfig.triggerWord.triggerDuration > Date.now();
     return Player.interactBackup() && (!isActivated || !isTriggered);
   }
+  
+  Player.kneelBackup = Player.CanKneel;
+  Player.CanKneel = function () {
+    let isActivated = cursedConfig.isRunning && ChatRoomSpace != "LARP";
+    let isTriggered = cursedConfig.triggerWord.lastTrigger + cursedConfig.triggerWord.triggerDuration > Date.now();
+    return Player.kneelBackup() && (!isActivated || !isTriggered);
+  }
 
   // Prevent changing
   Player.changeBackup = Player.CanChange;
@@ -277,26 +288,15 @@ function InitAlteredFns() {
     let backupChatRoomDrawCharacter = ChatRoomDrawCharacter;
     ChatRoomDrawCharacter = function (...rest) {
       backupChatRoomDrawCharacter(...rest);
-      // Sets the X position
-      let X = 0;
-      let Space = 500;
-      if (ChatRoomCharacter.length == 3) Space = 333;
-      if (ChatRoomCharacter.length == 4) Space = 250;
-      if (ChatRoomCharacter.length >= 5) Space = 200;
-      if (ChatRoomCharacter.length >= 3) X = (Space / -5);
-
-      // Sets the Y position
-      let Y = 0;
-      if (ChatRoomCharacter.length == 3) Y = 50;
-      if (ChatRoomCharacter.length == 4) Y = 150;
-      if (ChatRoomCharacter.length == 5) Y = 250;
-
-      // Sets the zoom factor
-      let Zoom = 1;
-      if (ChatRoomCharacter.length == 3) Zoom = 0.9;
-      if (ChatRoomCharacter.length == 4) Zoom = 0.7;
-      if (ChatRoomCharacter.length >= 5) Zoom = 0.5;
+      // Determine the horizontal & vertical position and zoom levels to fit all characters evenly in the room
+      var Space = ChatRoomCharacter.length >= 2 ? 1000 / Math.min(ChatRoomCharacter.length, 5) : 500;
+      var Zoom = ChatRoomCharacter.length >= 3 ? Space / 400 : 1;
+      var X = ChatRoomCharacter.length >= 3 ? (Space - 500 * Zoom) / 2 : 0;
+      var Y = ChatRoomCharacter.length <= 5 ? 1000 * (1 - Zoom) / 2 : 0;
+      
       for (let C = 0; C < ChatRoomCharacter.length; C++) {
+        var CharX = X + (C % 5) * Space;
+        var CharY = Y + Math.floor(C / 5) * 500;
         if (!cursedConfig.hasHiddenDisplay && ChatRoomCharacter[C].MemberNumber != Player.MemberNumber) {
           if (
             ChatRoomCharacter[C].MemberNumber != null
@@ -307,7 +307,7 @@ function InitAlteredFns() {
             ChatRoomCharacter[C].isCursed = ChatRoomCharacter[C].Inventory.find(A => A.Name == "Curse" + currentVersion) ? "C" : "?";
             ChatRoomCharacter[C].isCursed === "C" ? TryPopTip(40) : TryPopTip(49);
             //DrawText(ChatRoomCharacter[C].isCursed, (C % 5) * Space + X + 250 * Zoom, (25 + Y) + (Math.floor(C / 5) * 1000), ChatRoomCharacter[C].isCursed === "C" ? "White" : "Red");
-            DrawText(ChatRoomCharacter[C].isCursed, (C % 5) * Space + X + 250 * Zoom, Y + Math.floor(C / 5) * 500 + 25, ChatRoomCharacter[C].isCursed === "C" ? "White" : "Red");
+            DrawText(ChatRoomCharacter[C].isCursed, CharX + 250 * Zoom, CharY + 20, ChatRoomCharacter[C].isCursed === "C" ? "White" : "Red");
           }
         }
       }
@@ -380,8 +380,8 @@ function InitBasedFns() {
     let backupMainHallClick = MainHallClick;
     MainHallClick = (...rest) => {
       if (MouseIn(45, 665, 135 - 45, 755 - 665)) {
-        CurseRoomRun();
         CurrentScreen = "CurseRoom";
+        CurseRoomRun();
       }
       backupMainHallClick(...rest);
     };
