@@ -150,8 +150,8 @@ function InitAlteredFns() {
   }
 
   //Wardrobe V2
-  if (cursedConfig.hasWardrobeV2) {
-    LoadAppearanceV2();
+  if (cursedConfig.hasWardrobeV2 && window.AnimationGetDynamicDataName) {
+    // LoadAppearanceV2();
   }
 
   // Leashing
@@ -372,6 +372,18 @@ function InitAlteredFns() {
       }
       DrawCustomBeepText(GT(Player.MemberNumber, { Tag: "AsylumLockdownActive" }));
       backupAsylumBedroomLoad(...rest);
+    };
+  }
+  
+  // Garbled whispers
+  
+  if (window.ChatRoomTarget) {
+    let backupChatRoomTarget = ChatRoomTarget;
+    ChatRoomTarget = function (...rest) {
+      backupChatRoomTarget(...rest);
+      if (cursedConfig.isRunning && cursedConfig.garbledNames && ChatRoomTargetMemberNumber && Array.isArray(Player.Effect) && Player.IsBlind()) {
+        document.getElementById("InputChat").placeholder = TextGet("WhisperTo") + " ???";
+      }
     };
   }
 }
